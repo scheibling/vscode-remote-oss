@@ -1,225 +1,76 @@
 {
-    "name": "remote-oss",
-    "displayName": "Remote (OSS)",
-    "description": "Remote (OSS)",
-    "version": "0.0.4",
-    "publisher": "xaberus",
+    "name": "code-remote-machines",
+    "displayName": "Remote Machines",
+    "description": "Remote Machines",
+    "version": "0.3.5",
+    "publisher": "scheiblingco",
     "repository": {
-        "url": "https://github.com/xaberus/vscode-remote-oss"
+        "url": "https://github.com/scheiblingco/code-remote-machines"
     },
     "license": "MIT",
     "engines": {
-        "vscode": "^1.67.0"
+        "vscode": "^1.85.0"
     },
     "extensionKind": [
         "ui"
     ],
     "enabledApiProposals": [
-        "resolvers",
-        "terminalDataWriteEvent",
-        "contribViewsRemote"
+        "resolvers"
     ],
     "categories": [
         "Other"
     ],
     "activationEvents": [
-        "onResolveRemoteAuthority:remote-oss",
-        "onCommand:remote-oss.openEmptyWindowInCurrentWindow",
-        "onCommand:remote-oss.openFolderInCurrentWindow",
-        "onCommand:remote-oss.showLog",
-        "onView:remoteHosts"
+        "onResolveRemoteAuthority:code-remote-machines"
     ],
     "main": "./out/extension.js",
+    "browser": "./out/browser-extension.js",
     "capabilities": {
         "untrustedWorkspaces": {
             "supported": true
         }
     },
     "contributes": {
-        "views": {
-            "remote": [
-                {
-                    "id": "remoteHosts",
-                    "name": "Remote Hosts",
-                    "group": "targets@1",
-                    "remoteName": "remote-oss"
-                }
-            ]
-        },
-        "viewsWelcome": [
-            {
-                "view": "remoteHosts",
-                "when": "remote-oss:noHosts",
-                "contents": "No remote hosts have been configured yet."
-            }
-        ],
         "commands": [
             {
-                "command": "remote-oss.configureHosts",
-                "title": "Configure",
-                "icon": "$(gear)"
-            },
-            {
-                "command": "remote-oss.openEmptyWindowInCurrentWindow",
-                "title": "Connect Current Window to Host...",
-                "category": "Remote-OSS",
-                "icon": "$(empty-window)"
-            },
-            {
-                "command": "remote-oss.openFolderInCurrentWindow",
-                "title": "Connect Current Window to Folder on Host...",
-                "category": "Remote-OSS",
-                "icon": "$(empty-window)"
-            },
-            {
-                "command": "remote-oss.showLog",
+                "command": "code-remote-machines.showLog",
                 "title": "Show Log",
-                "category": "Remote-OSS"
+                "category": "code-remote-machines"
+            },
+            {
+                "command": "code-remote-machines.openInCode",
+                "title": "Open in Visual Studio Code Desktop",
+                "category": "code-remote-machines"
+            },
+            {
+                "command": "code-remote-machines.openInCodeInsiders",
+                "title": "Open in Visual Studio Code Insiders Desktop",
+                "category": "code-remote-machines"
             }
         ],
         "resourceLabelFormatters": [
             {
                 "scheme": "vscode-remote",
-                "authority": "remote-oss+*",
+                "authority": "code-remote-machines+*",
                 "formatting": {
-                    "label": "${path}",
+                    "label": "scheme:${scheme}:path:${path}:authority:${authority}:authoritySuffix:${authoritySuffix}",
                     "separator": "/",
                     "tildify": true,
-                    "workspaceSuffix": "remote"
+                    "normalizeDriveLetter": true,
+                    "stripPathStartingSeparator": true,
+                    "workspaceSuffix": "remote",
+                    "workspaceTooltip": "workspace tooltip"
                 }
             }
         ],
         "menus": {
             "statusBar/remoteIndicator": [
                 {
-                    "command": "remote-oss.openEmptyWindowInCurrentWindow",
-                    "when": "true",
-                    "group": "remote_20_oss_1general@1"
-                },
-                {
-                    "command": "remote-oss.showLog",
+                    "command": "code-remote-machines.showLog",
                     "when": "true",
                     "group": "remote_20_oss_1general@4"
                 }
-            ],
-            "view/title": [
-                {
-                    "command": "remote-oss.configureHosts",
-                    "when": "view == remoteHosts",
-                    "group": "navigation"
-                }
-            ],
-            "view/item/context": [
-                {
-                    "command": "remote-oss.openEmptyWindowInCurrentWindow",
-                    "when": "viewItem == remote-oss.host",
-                    "group": "inline@1"
-                },
-                {
-                    "command": "remote-oss.openFolderInCurrentWindow",
-                    "when": "viewItem == remote-oss.folder",
-                    "group": "inline@1"
-                }
             ]
-        },
-        "configuration": {
-            "title": "Remote - OSS",
-            "properties": {
-                "remote.OSS.hosts": {
-                    "description": "Specify a list of hosts here that you want to connect to remotely.",
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "required": [
-                            "type",
-                            "name"
-                        ],
-                        "properties": {
-                            "type": {
-                                "type": "string",
-                                "description": "Specify the type of connection this is.",
-                                "enum": [
-                                    "manual"
-                                ],
-                                "enumDescriptions": [
-                                    "A manual connection that you will establish yourself. In particular, you are responsible for starting the correct server version and creating a tunnel from the specified port to the remote port the server is listening to."
-                                ]
-                            },
-                            "name": {
-                                "type": "string",
-                                "description": "Specifies the label to be used for this connection."
-                            },
-                            "folders": {
-                                "type": "array",
-                                "description": "Specifies a short cut list of workspace folders on the remote host.",
-                                "items": {
-                                    "oneOf": [
-                                        {
-                                            "type": "string",
-                                            "description": "Specifies the path on the remote host."
-                                        },
-                                        {
-                                            "type": "object",
-                                            "required": [
-                                                "name",
-                                                "path"
-                                            ],
-                                            "properties": {
-                                                "name": {
-                                                    "type": "string",
-                                                    "description": "Specifies a label to use instead of the full path."
-                                                },
-                                                "path": {
-                                                    "type": "string",
-                                                    "description": "Specifies the path on the remote host."
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "oneOf": [
-                            {
-                                "required": [
-                                    "host",
-                                    "port"
-                                ],
-                                "properties": {
-                                    "type": {
-                                        "const": "manual"
-                                    },
-                                    "host": {
-                                        "type": "string",
-                                        "description": "Specifies the host name or IP address of the host to connect to."
-                                    },
-                                    "port": {
-                                        "type": "number",
-                                        "description": "Specifies the port to connect to.",
-                                        "minimum": 1025,
-                                        "maximum": 65535
-                                    },
-                                    "connectionToken": {
-                                        "oneOf": [
-                                            {
-                                                "type": "string"
-                                            },
-                                            {
-                                                "type": "boolean"
-                                            }
-                                        ],
-                                        "default": {
-                                            "const": true
-                                        },
-                                        "description": "Assume that the server was started wit this connection token. Use false to disable connection tokens. Use true to ask for a token before connecting."
-                                    }
-                                }
-                            }
-                        ],
-                        "unevaluatedProperties": false
-                    }
-                }
-            }
         }
     },
     "scripts": {
@@ -228,13 +79,15 @@
         "watch": "tsc -watch -p ./",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
-        "package": "vsce package"
+        "package": "vsce package",
+        "run-in-browser": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ."
     },
     "devDependencies": {
         "@types/glob": "^7.2.0",
         "@types/mocha": "^9.1.1",
         "@types/node": "14.x",
-        "@types/vscode": "^1.67.0",
+        "@types/vscode": "^1.85.0",
+        "@vscode/test-web": "^0.0.54",
         "@typescript-eslint/eslint-plugin": "^5.21.0",
         "@typescript-eslint/parser": "^5.21.0",
         "eslint": "^8.14.0",

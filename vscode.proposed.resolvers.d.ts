@@ -215,7 +215,7 @@ declare module 'vscode' {
 
 		/**
 		 * The authority part of the current opened `vscode-remote://` URI.
-		 * Defined by extensions, e.g. `remote-oss+${host}` for remotes using a secure shell.
+		 * Defined by extensions, e.g. `code-remote-machines+${host}` for remotes using a secure shell.
 		 *
 		 * *Note* that the value is `undefined` when there is no remote extension host but that the
 		 * value is defined in all extension hosts (local and remote) in case a remote extension host

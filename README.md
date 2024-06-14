@@ -1,4 +1,4 @@
-# remote-oss README
+# code-remote-machines README
 
 This extension allows you to use the existing remote extension host (REH) machinery of
 VSCode for OSS builds. The machinery is the same as in the proprietary remote development
@@ -27,7 +27,7 @@ VSCode defines the connection to remote hosts though special URIs of the shape:
 ```
     vscode-remote://<resolver>+<label><path>
 ```
-In our case `<resolver>` is `remote-oss`, label is the name of the host defined in the settings
+In our case `<resolver>` is `code-remote-machines`, label is the name of the host defined in the settings
 and `<path>` is the absolute path on the remote host.
 
 In order to hook into this mechanism, this extension needs to enable several API proposals.
@@ -41,7 +41,7 @@ running the `Preferences: Configure Runtime Arguments` command.
     ...
     "enable-proposed-api": [
         ...,
-        "xaberus.remote-oss"
+        "scheiblingco.code-remote-machines"
     ],
     ...
 }
@@ -180,3 +180,7 @@ provided.
 ### 0.0.1
 
 Initial release of Remote OSS
+
+
+
+https://localhost:5000
