@@ -64,8 +64,66 @@ this also means that you have to upgrade the REH instance every time you upgrade
 If you are seeing "authentication" errors, the most probable reason is that your REH instance and
 your editor have different versions.
 
-## Examples
+## Quick Start
 
+### Prerequirements
+- You'll ned a remote host with a vscode-compatible server binary installed. This can be vscodium, code, code-server or equivalent. The example "vscodium-server over SSH tunnel" has a script for the installation of vscodium, but any of the variants should work. !This needs to be the same version as the desktop client you are running locally!
+- You'll need to start the server on the remote host and note the connection token, either by setting it manually or letting it be generated for you. When using vscode serve-web, you'll get a link in the following format: `http://localhost:8000?tkn=12345678-1234-1234-1234-1234567890ab`, the last part of that URL is the connection token.
+- You need to have access to this port somehow from the client machine. This can either be via SSH Tunnel (this is how the proprietary vscode remote ssh extension and the open source remote ssh extension do it)
+- You will need to install the Remote OSS extension
+- You need to configure the runtime arguments for the desktop application to enable the proposed APIs for the extension to work (see Requirements). Add the enable-proposed-api section to that file, save and restart (not reload window) your client. If you do not have this activated, you will not be able to see the remote hosts defined by this plugin.
+- You need to configure the host in your settings.json file manually.
+
+### Manual Connection
+These steps set up a manual connection over a local network. 
+Be careful with the 0.0.0.0-host, if the server you are connecting to has a public IP this means that the port will be available for everyone if it is not protected by a firewall. The recommended way to do it is to manually set this to an internal IP, for example 10.0.0.15
+
+#### On the server
+```bash
+# Replace the "code" command with vscodium, code-server or openvscode depending on which variant you are using
+code serve-web \
+    # This is the IP address of the server that your client will be connecting to
+    --host 10.0.0.15 \
+
+    # The port, default is 8000
+    --port 8000 \
+
+    # Disable telemetry features
+    --telemetry-level off \
+    # Manually set a connection token
+    --connection-token super-secure-connection-token-here
+```
+You should then receive a message that the server has been started and is listening on the specified port.
+
+#### On the client
+For the settings above, add this connection to your client settings.json. You can choose not to provide the connection token here in the settings, which will prompt you for the token when you connect to the server.
+```json
+{
+    "remote.OSS.hosts": [
+        {
+            "type": "manual",
+            "name": "my-server",
+            "host": "10.0.0.15",
+            "port": 8000,
+            "connectionToken": "super-secure-connection-token-here",
+            "folders": [],
+        }
+    ]
+}
+```
+
+Save the file, and then go to the remote explorer tab on the client. You should see the server there, click on the folder to open the connection.
+
+From that point onwards, the experience is roughly the same as with the official Remote SSH extension
+
+![image](https://github.com/xaberus/vscode-remote-oss/assets/24367830/78c9e29e-2c6a-490c-b7d4-7f2539bb012c)
+
+### Connect to a docker container
+Connecting to a docker/devcontainer should work roughly the same way as the manual connection above, except the definition of the host and connection token parameters.
+The port used for this extension should be the same port that is used for the web interface.
+
+
+### VSCodium Server over SSH Tunnel
 In this example we are going to connect to a remote host `rem` as declared in our SSH `config`.
 We are going to use 8000 as the local port and 11111 as the remote port. (We are assuming that these ports are free.) In summary:
 
@@ -75,6 +133,7 @@ remote port: 11111
 commit: c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
 ```
 
+#### On the server
 Log in to the remote port and simultaneously setup port forwarding:
 
 ```bash
@@ -132,6 +191,8 @@ to the REH instance.
 
 You have to keep the SSH session running as long as you using the REH. Alternatively, you can use
 tools like tmux to create persistent sessions.
+
+#### On your client
 
 Now, to connect your local editor install the extension and add the following section to your `settings.json`:
 
